@@ -1,12 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
-  "summary": "Build an app on the Internet Computer (ICP) to host and run the user's own AI model, including guidance on ICP resource/cost requirements.",
+  "projectStateVersion": 7,
+  "summary": "Build an app on the Internet Computer (ICP) to host and run the user's own AI model, including a real (non-mocked) inference runtime, guidance on ICP resource/cost requirements, and an on-chain ICP funding experience (Funding page with deposit UX like QR code, refueling/low-fuel warnings, and optional sweep) intended to support long-term (10+ year) operation and live deployment on IC.",
   "architectural_notes": [
-    "Target deployment platform: Internet Computer (ICP)."
+    "Target deployment platform: Internet Computer (ICP).",
+    "Include a user-facing ICP deposit/funding flow (on-chain) to support long-term operation (10+ years).",
+    "IC ingress message payload limit (~2MB) constrains direct single-call uploads; supporting larger model artifacts requires chunked upload and reassembly.",
+    "ICP transfers/top-ups should be implemented via the official Ledger interface (ICRC-1) for balances and transfers (e.g., sweep)."
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Inference currently returns a simulated/mock response; real model runtime execution is not yet implemented."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-a-minimal-end-to-end-icp-app-that-lets-a-user-provide-upload-register-their-own-ai-model-artifact-and-invoke-a-backend-inference-endpoint-with-clear-constraints-on-model-size-compute-suitable-for-running-inside-an-ic-canister",
@@ -39,6 +44,46 @@
         "REQ-5"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-new-authenticated-funding-page-in-the-frontend-that-explains-in-clear-english-how-to-fund-the-app-on-chain-by-depositing-icp-intended-to-cover-long-term-operation-10-years-and-make-it-accessible-from-the-existing-top-navigation",
+      "title": "Add a new authenticated “Funding” page in the frontend that explains (in clear English) how to fund the app on-chain by depositing ICP intended to cover long-term operation (10+ years), and make it accessible from the existing top navigation.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-funding-page-display-the-live-funding-status-by-calling-the-new-backend-endpoints-cycles-balance-and-deposit-info-and-provide-ui-affordances-to-copy-the-deposit-address-account-details",
+      "title": "On the Funding page, display the live funding status by calling the new backend endpoints (cycles balance and deposit info), and provide UI affordances to copy the deposit address/account details.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-10-year-runway-section-to-the-funding-page-that-helps-the-user-estimate-how-much-icp-to-deposit-for-10-years-of-operation-by-reusing-the-existing-cost-estimator-logic-and-presenting-the-computed-annual-and-10-year-totals-with-a-clear-disclaimer-that-costs-vary",
+      "title": "Add a “10-year runway” section to the Funding page that helps the user estimate how much ICP to deposit for ~10 years of operation by reusing the existing cost estimator logic and presenting the computed annual and 10-year totals, with a clear disclaimer that costs vary.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-or-update-the-project-s-ic-deployment-configuration-so-the-app-can-be-deployed-to-the-internet-computer-using-dfx-including-canister-definitions-for-the-motoko-backend-and-the-frontend-assets",
+      "title": "Add or update the project’s IC deployment configuration so the app can be deployed to the Internet Computer using dfx, including canister definitions for the Motoko backend and the frontend assets.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-production-deployment-runbook-readme-style-documentation-that-a-developer-can-follow-to-deploy-the-app-to-mainnet-ic-including-prerequisites-dfx-build-steps-deploy-commands-and-how-to-retrieve-the-live-url-and-canister-ids-after-deployment",
+      "title": "Create a production deployment runbook (README-style documentation) that a developer can follow to deploy the app to mainnet IC, including prerequisites (dfx), build steps, deploy commands, and how to retrieve the live URL and canister IDs after deployment.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -59,6 +104,66 @@
       "summary": "Implement backend instrumentation endpoints to support cost estimation by measuring (and returning) basic metrics such as model payload size stored, number of inference calls, and approximate per-call compute time where feasible.",
       "reqIds": [
         "REQ-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Add an on-chain ICP deposit/funding page so users can deposit ICP to fuel the app (with an expectation of supporting long-term operation, e.g., 10+ years).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Implement backend query endpoints that expose the canister’s funding/deposit information and status needed by the Funding page, including: (1) the canister principal, (2) the canister cycles balance, and (3) any deposit addressing info the UI needs to show the user where to send ICP for top-ups.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Replace the current mock/simulated inference response with a real inference implementation (model-specific runtime) so the Inference UI performs actual model execution.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Add a QR code on the Funding page that encodes the deposit address/account details so users can easily deposit/refuel ICP.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add an ICP sweep function: allow the user to input a destination address and sweep all ICP funds to it via the official Ledger (ICRC-1) transfer flow.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add a low-fuel/out-of-funds warning: detect low cycles (and/or inability to pay for compute) and clearly notify the user when the app is out of fuel/needs refueling.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Deploy the dapp live on the Internet Computer (IC) (production deployment flow).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Remove hardcoded deployment values that block a correct mainnet deployment by making funding status values derive from the deployed canister at runtime (e.g., canister principal and cycles balance) rather than fixed constants.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Ensure the deployed frontend communicates with the deployed backend canister on mainnet IC (not local), using the correct generated canister IDs for the `ic` network build.",
+      "reqIds": [
+        "REQ-13"
       ],
       "status": "pending"
     }

@@ -2,13 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-minimal-end-to-end-icp-app-that-lets-a-user-provide-upload-register-their-own-ai-model-artifact-and-invoke-a-backend-inference-endpoint-with-clear-constraints-on-model-size-compute-suitable-for-running-inside-an-ic-canister",
-      "featureTitle": "Create a minimal end-to-end ICP app that lets a user provide (upload/register) their own AI model artifact and invoke a backend inference endpoint, with clear constraints on model size/compute suitable for running inside an IC canister.",
+      "featureId": "feature-add-or-update-the-project-s-ic-deployment-configuration-so-the-app-can-be-deployed-to-the-internet-computer-using-dfx-including-canister-definitions-for-the-motoko-backend-and-the-frontend-assets",
+      "featureTitle": "Add or update the project’s IC deployment configuration so the app can be deployed to the Internet Computer using dfx, including canister definitions for the Motoko backend and the frontend assets.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/InferencePage.tsx",
-        "frontend/src/pages/LimitationsPage.tsx",
-        "frontend/src/pages/ModelManagementPage.tsx"
+        "frontend/.ic-assets.json5"
       ],
       "components": [
         "authorization@4.0.0",
@@ -20,19 +17,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-10"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-internet-identity-sign-in-and-associate-each-uploaded-registered-model-with-the-authenticated-principal-so-users-can-only-view-manage-their-own-models",
-      "featureTitle": "Add Internet Identity sign-in and associate each uploaded/registered model with the authenticated principal so users can only view/manage their own models.",
+      "featureId": "feature-create-a-production-deployment-runbook-readme-style-documentation-that-a-developer-can-follow-to-deploy-the-app-to-mainnet-ic-including-prerequisites-dfx-build-steps-deploy-commands-and-how-to-retrieve-the-live-url-and-canister-ids-after-deployment",
+      "featureTitle": "Create a production deployment runbook (README-style documentation) that a developer can follow to deploy the app to mainnet IC, including prerequisites (dfx), build steps, deploy commands, and how to retrieve the live URL and canister IDs after deployment.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/auth/AuthGate.tsx",
-        "frontend/src/components/auth/LoginButton.tsx",
-        "frontend/src/components/auth/ProfileSetupModal.tsx",
-        "frontend/src/hooks/useCurrentUserProfile.ts"
+        "frontend/DEPLOYMENT_RUNBOOK.md"
       ],
       "components": [
         "authorization@4.0.0",
@@ -44,51 +37,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-provide-icp-cost-guidance-inside-the-app-include-an-interactive-estimator-that-helps-the-user-approximate-icp-cycles-needed-based-on-storage-size-number-of-inference-calls-and-average-compute-time-per-call-and-display-a-clear-disclaimer-that-estimates-vary-by-implementation",
-      "featureTitle": "Provide ICP cost guidance inside the app: include an interactive estimator that helps the user approximate ICP/cycles needed based on storage size, number of inference calls, and average compute time per call, and display a clear disclaimer that estimates vary by implementation.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/lib/costEstimator.ts",
-        "frontend/src/pages/CostEstimatorPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-a-coherent-distinct-visual-theme-across-the-app-colors-typography-spacing-and-component-styling-suitable-for-a-developer-focused-ai-on-icp-dashboard-do-not-use-a-blue-purple-primary-palette",
-      "featureTitle": "Apply a coherent, distinct visual theme across the app (colors, typography, spacing, and component styling) suitable for a developer-focused “AI on ICP” dashboard. Do not use a blue/purple primary palette.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/index.css",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
+        "REQ-11"
       ],
       "confidence": "high"
     }

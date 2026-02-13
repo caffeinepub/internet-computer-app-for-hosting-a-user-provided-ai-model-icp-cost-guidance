@@ -1,135 +1,65 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "AI on ICP: Model Registration, Inference UI, Auth Gating, and Cost Estimator (Frontend)",
+  "title": "IC mainnet (dfx) deployment readiness for React frontend",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Provide model registration and inference invocation UI with clear IC-feasible limits and error handling.",
+      "id": "REQ-10",
+      "summary": "Ensure the frontend build output and asset settings are compatible with an IC assets canister deployment via dfx.",
       "acceptanceCriteria": [
-        "Frontend provides a screen to register a model (at minimum: name, version, description, and model payload upload or pasted serialized parameters).",
-        "Backend stores the registered model metadata and payload in stable storage (or documents size limits if payload must be small).",
-        "Frontend provides an input form to send an inference request and displays the response and any error messages.",
-        "Backend exposes a canister method to run inference against the stored model (may be limited to a small/demo model class that can realistically run in Motoko/WASM).",
-        "App includes an in-app page explaining platform limitations (no GPU, canister memory/compute constraints) and what kinds of models are feasible."
+        "A `dfx deploy --network ic` from the repository root completes successfully and deploys all required canisters.",
+        "The deployment configuration includes both the backend canister (Motoko) and a frontend assets canister that serves the built React app."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/.ic-assets.json5",
           "operation": "create",
-          "description": "Create the app shell that wires navigation between required screens: Model Management (register/list), Inference, Cost Estimator, and Limitations/About. Ensure model-related screens are not accessible until signed in (REQ-2)."
+          "description": "Add IC assets canister settings for the built frontend (e.g., caching rules for hashed assets and no-cache for HTML entry) so the React build can be safely served on mainnet. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/ModelManagementPage.tsx",
-          "operation": "create",
-          "description": "Implement a model management screen: register model form (name, version, description, payload upload and/or paste) and a list of the signed-in user's models fetched from the backend. Enforce and clearly display realistic payload limits suitable for canister storage/compute, and show validation + backend error messages in English."
-        },
-        {
-          "path": "frontend/src/pages/InferencePage.tsx",
-          "operation": "create",
-          "description": "Implement an inference screen: choose a model owned by the caller, provide an input prompt/request payload, submit an inference call, and render response + errors. If the inference backend capability is not yet present in generated typings, call via a typed wrapper that safely uses a narrow 'as any' surface area and displays a clear failure message when unavailable."
-        },
-        {
-          "path": "frontend/src/lib/models.ts",
-          "operation": "create",
-          "description": "Add frontend helpers for model payload handling: converting uploaded files to Uint8Array, computing payloadSize, and providing constants/documentation for maximum allowed size. Keep limits aligned with the app's documented constraints."
-        },
-        {
-          "path": "frontend/src/lib/backendCompat.ts",
-          "operation": "create",
-          "description": "Add a small backend-compat wrapper used by the InferencePage to invoke the backend inference capability (if present) without spreading unsafe casts across the UI. Centralize error normalization to user-friendly messages."
-        },
-        {
-          "path": "frontend/src/pages/LimitationsPage.tsx",
-          "operation": "create",
-          "description": "Create the in-app 'Limitations / About' page describing IC constraints (no GPU, canister memory and instruction limits, practical model types), and explicitly state that large LLM hosting is not supported. Use English-only UI text."
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Validate the HTML entry is compatible with being served from an IC assets canister (no localhost-only assumptions; relative asset references as needed for canister hosting). Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-2",
-      "summary": "Add Internet Identity sign-in UX and gate model registration/inference to authenticated users; associate views with the current principal via backend calls.",
+      "id": "REQ-11",
+      "summary": "Add developer-facing production deployment runbook for mainnet IC that includes prerequisites, build/deploy commands, and how to retrieve the live URL/canister IDs and sign in with Internet Identity.",
       "acceptanceCriteria": [
-        "Unauthenticated users are prompted to sign in before registering or invoking a model.",
-        "Each model record includes an owner principal.",
-        "Backend enforces authorization: only the owner can read/update/delete their model(s) and run inference using them."
+        "Documentation includes exact commands to: build the frontend, deploy to `--network ic`, and locate the deployed canister IDs.",
+        "Documentation explains how to open the deployed frontend in a browser (the live assets canister URL) and sign in with Internet Identity on mainnet."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/auth/LoginButton.tsx",
+          "path": "frontend/DEPLOYMENT_RUNBOOK.md",
           "operation": "create",
-          "description": "Create a Login/Logout button using the selected authorization component patterns (Internet Identity via useInternetIdentity). Verify the component's usage instructions before implementing. On logout, clear cached app data (React Query cache) per guidance."
-        },
-        {
-          "path": "frontend/src/components/auth/AuthGate.tsx",
-          "operation": "create",
-          "description": "Create an AuthGate wrapper that prompts unauthenticated users to sign in before accessing protected screens (model management and inference). Use the selected authorization component guidance for handling anonymous principals. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useCurrentUserProfile.ts",
-          "operation": "create",
-          "description": "Add a React Query hook that calls getCallerUserProfile() via useActor and exposes loading states in a way that avoids modal flash, following the selected authorization component guidance. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/ProfileSetupModal.tsx",
-          "operation": "create",
-          "description": "Implement a first-login profile setup modal to ask for a human-readable name and save it via saveCallerUserProfile(). Ensure it only shows when authenticated and the backend returns null profile. Use the selected authorization component guidance. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire authentication UX into the app shell: display LoginButton in the header, wrap protected pages with AuthGate, and conditionally show ProfileSetupModal after login. Ensure unauthorized backend errors are surfaced as friendly messages."
+          "description": "Create README-style runbook focused on mainnet IC deployment for the app: required tooling (dfx), required environment values for mainnet builds, build steps for the React app, `dfx deploy --network ic`, how to locate canister IDs, and how to open the live assets canister URL and sign in with Internet Identity on mainnet. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-3",
-      "summary": "Provide an in-app interactive ICP/cycles cost estimator with editable assumptions and disclaimers.",
+      "id": "REQ-13",
+      "summary": "Make the deployed frontend use correct mainnet (`ic`) backend canister IDs and host configuration at runtime/build time (no local-only IDs in production).",
       "acceptanceCriteria": [
-        "UI includes inputs for model size (MB), expected requests per day/month, and an estimated compute cost per request (e.g., ms or a selectable small/medium/large preset).",
-        "UI outputs an estimated cycles burn and a rough ICP equivalent (with the conversion factor shown and editable or clearly sourced/dated in text).",
-        "UI includes a short disclaimer that actual costs depend on subnet pricing, implementation, and canister behavior, and encourages measuring with real usage."
+        "After `dfx deploy --network ic`, the hosted frontend can call the backend canister successfully on mainnet (e.g., load authenticated pages after signing in).",
+        "No frontend code relies on local-only canister IDs when built/deployed for the `ic` network."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/CostEstimatorPage.tsx",
+          "path": "frontend/src/config.ts",
           "operation": "create",
-          "description": "Create an interactive cost estimator page with inputs for model size (MB), requests per day/month, and compute per request (ms and/or presets). Output estimated cycles and ICP equivalent with an editable conversion factor and a dated/source note plus a clear disclaimer about variability."
+          "description": "Implement `createActorWithConfig` used by `frontend/src/hooks/useActor.ts` so it selects the correct backend canister ID and network host for `ic` builds (and does not default to local canister IDs in production). Keep compatibility with existing `useActor` behavior and options passing. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/lib/costEstimator.ts",
+          "path": "frontend/.env.ic",
           "operation": "create",
-          "description": "Implement the cost-estimation math utilities (pure functions) used by the estimator UI, including units handling, presets, and formatting helpers."
+          "description": "Add mainnet build environment values (e.g., backend canister ID for `ic`, and any host/network selectors) consumed by `frontend/src/config.ts` during production builds. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/hooks/useActor.ts",
           "operation": "modify",
-          "description": "Wire the Cost Estimator page into navigation so it is reachable from the app shell."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Apply a cohesive developer-focused dashboard theme with a non-blue/non-purple primary palette and accessible contrast.",
-      "acceptanceCriteria": [
-        "All primary pages (sign-in, model management, inference, cost estimator, limitations/about) share a consistent theme.",
-        "Theme uses a non-blue/non-purple primary color scheme and remains accessible (readable contrast)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "create",
-          "description": "Create global theme tokens (CSS variables consumed by Tailwind + shadcn) using a distinct non-blue/non-purple primary color (e.g., green/orange/amber) and ensure readable contrast for foreground/background, buttons, and focus rings."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Adjust Tailwind theme configuration only as needed to support the new palette and consistent spacing/typography (while keeping shadcn variable-based colors). Ensure no blue/purple primary is used."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Ensure all primary pages render within a consistent layout (header/nav/content container) so typography, spacing, and component styling are coherent across the dashboard."
+          "description": "Update imports/typing expectations only if needed to align with the new `frontend/src/config.ts` implementation without changing the hook's overall behavior or authentication flow; do not introduce local-only canister ID fallbacks for production builds. Verify the component's usage instructions before implementing."
         }
       ]
     }

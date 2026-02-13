@@ -10,9 +10,11 @@ import ModelManagementPage from './pages/ModelManagementPage';
 import InferencePage from './pages/InferencePage';
 import CostEstimatorPage from './pages/CostEstimatorPage';
 import LimitationsPage from './pages/LimitationsPage';
-import { Cpu, DollarSign, Info, Database } from 'lucide-react';
+import FundingPage from './pages/FundingPage';
+import AuthGate from './components/auth/AuthGate';
+import { Cpu, DollarSign, Info, Database, Wallet } from 'lucide-react';
 
-type Page = 'models' | 'inference' | 'cost' | 'limitations';
+type Page = 'models' | 'inference' | 'cost' | 'limitations' | 'funding';
 
 function App() {
   const { identity } = useInternetIdentity();
@@ -36,6 +38,10 @@ function App() {
     { id: 'inference' as Page, label: 'Run Inference', icon: Cpu },
     { id: 'cost' as Page, label: 'Cost Estimator', icon: DollarSign },
     { id: 'limitations' as Page, label: 'About & Limits', icon: Info },
+  ];
+
+  const authenticatedNavItems = [
+    { id: 'funding' as Page, label: 'Funding', icon: Wallet },
   ];
 
   return (
@@ -79,6 +85,24 @@ function App() {
                   </button>
                 );
               })}
+              {isAuthenticated && authenticatedNavItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentPage === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setCurrentPage(item.id)}
+                    className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap border-b-2 ${
+                      isActive
+                        ? 'border-primary text-foreground'
+                        : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </nav>
@@ -88,6 +112,11 @@ function App() {
           {currentPage === 'inference' && <InferencePage />}
           {currentPage === 'cost' && <CostEstimatorPage />}
           {currentPage === 'limitations' && <LimitationsPage />}
+          {currentPage === 'funding' && (
+            <AuthGate>
+              <FundingPage />
+            </AuthGate>
+          )}
         </main>
 
         <footer className="border-t border-border mt-16 py-8 bg-card/30">

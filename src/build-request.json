@@ -1,122 +1,89 @@
 {
   "kind": "build_request",
-  "title": "Internet Computer app for hosting a user-provided AI model + ICP cost guidance",
-  "priority": "normal",
+  "title": "Prepare and deploy the dapp live on the Internet Computer (IC)",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Create a minimal end-to-end ICP app that lets a user provide (upload/register) their own AI model artifact and invoke a backend inference endpoint, with clear constraints on model size/compute suitable for running inside an IC canister.",
+      "id": "REQ-10",
+      "text": "Add or update the project’s IC deployment configuration so the app can be deployed to the Internet Computer using dfx, including canister definitions for the Motoko backend and the frontend assets.",
       "target": "both",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "i want to host my own AI model!"
+          "deploy my app live on the IC."
         ]
       },
       "acceptanceCriteria": [
-        "Frontend provides a screen to register a model (at minimum: name, version, description, and model payload upload or pasted serialized parameters).",
-        "Backend stores the registered model metadata and payload in stable storage (or documents size limits if payload must be small).",
-        "Frontend provides an input form to send an inference request and displays the response and any error messages.",
-        "Backend exposes a canister method to run inference against the stored model (may be limited to a small/demo model class that can realistically run in Motoko/WASM).",
-        "App includes an in-app page explaining platform limitations (no GPU, canister memory/compute constraints) and what kinds of models are feasible."
+        "A `dfx deploy --network ic` from the repository root completes successfully and deploys all required canisters.",
+        "The deployment configuration includes both the backend canister (Motoko) and a frontend assets canister that serves the built React app."
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Add Internet Identity sign-in and associate each uploaded/registered model with the authenticated principal so users can only view/manage their own models.",
+      "id": "REQ-11",
+      "text": "Create a production deployment runbook (README-style documentation) that a developer can follow to deploy the app to mainnet IC, including prerequisites (dfx), build steps, deploy commands, and how to retrieve the live URL and canister IDs after deployment.",
       "target": "both",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "can you build me an app on the internet computer?"
+          "deploy my app live on the IC."
         ]
       },
       "acceptanceCriteria": [
-        "Unauthenticated users are prompted to sign in before registering or invoking a model.",
-        "Each model record includes an owner principal.",
-        "Backend enforces authorization: only the owner can read/update/delete their model(s) and run inference using them."
+        "Documentation includes exact commands to: build the frontend, deploy to `--network ic`, and locate the deployed canister IDs.",
+        "Documentation explains how to open the deployed frontend in a browser (the live assets canister URL) and sign in with Internet Identity on mainnet."
       ]
     },
     {
-      "id": "REQ-3",
-      "text": "Provide ICP cost guidance inside the app: include an interactive estimator that helps the user approximate ICP/cycles needed based on storage size, number of inference calls, and average compute time per call, and display a clear disclaimer that estimates vary by implementation.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "how much icp do i need"
-        ]
-      },
-      "acceptanceCriteria": [
-        "UI includes inputs for model size (MB), expected requests per day/month, and an estimated compute cost per request (e.g., ms or a selectable small/medium/large preset).",
-        "UI outputs an estimated cycles burn and a rough ICP equivalent (with the conversion factor shown and editable or clearly sourced/dated in text).",
-        "UI includes a short disclaimer that actual costs depend on subnet pricing, implementation, and canister behavior, and encourages measuring with real usage."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Implement backend instrumentation endpoints to support cost estimation by measuring (and returning) basic metrics such as model payload size stored, number of inference calls, and approximate per-call compute time where feasible.",
+      "id": "REQ-12",
+      "text": "Remove hardcoded deployment values that block a correct mainnet deployment by making funding status values derive from the deployed canister at runtime (e.g., canister principal and cycles balance) rather than fixed constants.",
       "target": "backend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "how much icp do i need"
+          "deploy my app live on the IC."
         ]
       },
       "acceptanceCriteria": [
-        "Backend tracks per-model call counts and last-call timestamp in stable state.",
-        "Backend exposes a query method that returns stored model sizes and usage counters for the signed-in user.",
-        "Backend exposes a method to reset usage counters for the signed-in user (to support measurement sessions)."
+        "`getFundingStatus()` no longer returns a hardcoded canister ID and does not always return `cycles = 0`.",
+        "When deployed to IC, the Funding page can display the actual deployed canister principal and a non-mocked cycles balance (assuming the caller has permission per existing authorization rules)."
       ]
     },
     {
-      "id": "REQ-5",
-      "text": "Apply a coherent, distinct visual theme across the app (colors, typography, spacing, and component styling) suitable for a developer-focused “AI on ICP” dashboard. Do not use a blue/purple primary palette.",
+      "id": "REQ-13",
+      "text": "Ensure the deployed frontend communicates with the deployed backend canister on mainnet IC (not local), using the correct generated canister IDs for the `ic` network build.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
+        ],
+        "quotes": [
+          "deploy my app live on the IC."
         ]
       },
       "acceptanceCriteria": [
-        "All primary pages (sign-in, model management, inference, cost estimator, limitations/about) share a consistent theme.",
-        "Theme uses a non-blue/non-purple primary color scheme and remains accessible (readable contrast)."
+        "After `dfx deploy --network ic`, the hosted frontend can call the backend canister successfully on mainnet (e.g., load authenticated pages after signing in).",
+        "No frontend code relies on local-only canister IDs when built/deployed for the `ic` network."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor (no additional backend services).",
-    "Do not modify files under frontend/src/components/ui or any other immutablePaths (compose them instead).",
-    "Use English for all user-facing UI text.",
-    "Do not rely on external databases or third-party auth providers; only Internet Identity is allowed.",
-    "Do not claim support for hosting large LLMs or GPU inference inside the canister; document and enforce realistic limits."
+    "Backend must remain single-actor; all Motoko logic stays in `backend/main.mo` (create `backend/migration.mo` only if state migration is required).",
+    "Do not edit any files under `frontend/src/components/ui` (read-only).",
+    "Do not edit immutable frontend hook files: `frontend/src/hooks/useInternetIdentity.ts`, `frontend/src/hooks/useInternetIdentity.tsx`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`. Compose around them instead."
   ],
   "nonGoals": [
-    "Running or training large AI/LLM models inside the IC canister environment.",
-    "Integrating third-party AI inference APIs (OpenAI/Anthropic/etc.).",
-    "Real-time streaming responses or WebSocket-based inference.",
-    "Payments/billing automation for cycles/ICP purchases."
+    "Implementing a real (non-mock) AI inference runtime for frontier/container models on the IC.",
+    "Adding a QR code deposit UX, ICP sweep/withdrawal flow, or low-fuel warning (these may be separate build items unless explicitly included in this deployment-focused change).",
+    "Integrating third-party CI/CD providers (GitHub Actions, etc.) unless explicitly requested."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

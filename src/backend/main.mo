@@ -12,7 +12,9 @@ import Storage "blob-storage/Storage";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
@@ -287,5 +289,18 @@ actor {
         };
       }
     );
+  };
+
+  public query ({ caller }) func getFundingStatus() : async {
+    topUpAccount : ?Text;
+    depositInstructions : Text;
+  } {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view funding status");
+    };
+    {
+      topUpAccount = null;
+      depositInstructions = "Send ICP to your Cycles Wallet for top-up. See https://dashboard.internetcomputer.org/mainnet/canisters/ for more information and how to interact with this canister.";
+    };
   };
 };

@@ -140,6 +140,10 @@ export interface backendInterface {
     getAvailableModels(): Promise<Array<Model>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getFundingStatus(): Promise<{
+        topUpAccount?: string;
+        depositInstructions: string;
+    }>;
     getModelById(modelId: ModelId): Promise<Model | null>;
     getModelStats(): Promise<{
         totalInferenceCount: bigint;
@@ -339,18 +343,35 @@ export class Backend implements backendInterface {
             return from_candid_UserRole_n15(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getFundingStatus(): Promise<{
+        topUpAccount?: string;
+        depositInstructions: string;
+    }> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getFundingStatus();
+                return from_candid_record_n17(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getFundingStatus();
+            return from_candid_record_n17(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getModelById(arg0: ModelId): Promise<Model | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getModelById(arg0);
-                return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n19(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getModelById(arg0);
-            return from_candid_opt_n17(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n19(this._uploadFile, this._downloadFile, result);
         }
     }
     async getModelStats(): Promise<{
@@ -445,14 +466,14 @@ export class Backend implements backendInterface {
     async updateModelMetadata(arg0: ModelMetadataUpdate): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateModelMetadata(to_candid_ModelMetadataUpdate_n18(this._uploadFile, this._downloadFile, arg0));
+                const result = await this.actor.updateModelMetadata(to_candid_ModelMetadataUpdate_n20(this._uploadFile, this._downloadFile, arg0));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateModelMetadata(to_candid_ModelMetadataUpdate_n18(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.updateModelMetadata(to_candid_ModelMetadataUpdate_n20(this._uploadFile, this._downloadFile, arg0));
             return result;
         }
     }
@@ -472,7 +493,10 @@ function from_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 function from_candid_opt_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Model]): Model | null {
+function from_candid_opt_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Model]): Model | null {
     return value.length === 0 ? null : from_candid_Model_n11(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
@@ -511,6 +535,18 @@ function from_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uin
         payloadSize: value.payloadSize
     };
 }
+function from_candid_record_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    topUpAccount: [] | [string];
+    depositInstructions: string;
+}): {
+    topUpAccount?: string;
+    depositInstructions: string;
+} {
+    return {
+        topUpAccount: record_opt_to_undefined(from_candid_opt_n18(_uploadFile, _downloadFile, value.topUpAccount)),
+        depositInstructions: value.depositInstructions
+    };
+}
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     success: [] | [boolean];
     topped_up_amount: [] | [bigint];
@@ -535,8 +571,8 @@ function from_candid_variant_n16(_uploadFile: (file: ExternalBlob) => Promise<Ui
 function from_candid_vec_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Model>): Array<Model> {
     return value.map((x)=>from_candid_Model_n11(_uploadFile, _downloadFile, x));
 }
-function to_candid_ModelMetadataUpdate_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ModelMetadataUpdate): _ModelMetadataUpdate {
-    return to_candid_record_n19(_uploadFile, _downloadFile, value);
+function to_candid_ModelMetadataUpdate_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ModelMetadataUpdate): _ModelMetadataUpdate {
+    return to_candid_record_n21(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n9(_uploadFile, _downloadFile, value);
@@ -547,7 +583,7 @@ function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: Exte
 function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation | null): [] | [__CaffeineStorageRefillInformation] {
     return value === null ? candid_none() : candid_some(to_candid__CaffeineStorageRefillInformation_n2(_uploadFile, _downloadFile, value));
 }
-function to_candid_record_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function to_candid_record_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: ModelId;
     name: string;
     artifact?: ModelInferenceArtifact;

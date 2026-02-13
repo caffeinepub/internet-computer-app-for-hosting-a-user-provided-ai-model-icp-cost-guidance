@@ -40,6 +40,10 @@ export interface backendInterface {
     getAvailableModels(): Promise<Array<Model>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getFundingStatus(): Promise<{
+        topUpAccount?: string;
+        depositInstructions: string;
+    }>;
     getModelById(modelId: ModelId): Promise<Model | null>;
     getModelStats(): Promise<{
         totalInferenceCount: bigint;

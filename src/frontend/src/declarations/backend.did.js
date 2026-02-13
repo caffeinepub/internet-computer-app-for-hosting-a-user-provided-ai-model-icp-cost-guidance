@@ -78,6 +78,16 @@ export const idlService = IDL.Service({
   'getAvailableModels' : IDL.Func([], [IDL.Vec(Model)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getFundingStatus' : IDL.Func(
+      [],
+      [
+        IDL.Record({
+          'topUpAccount' : IDL.Opt(IDL.Text),
+          'depositInstructions' : IDL.Text,
+        }),
+      ],
+      ['query'],
+    ),
   'getModelById' : IDL.Func([ModelId], [IDL.Opt(Model)], ['query']),
   'getModelStats' : IDL.Func(
       [],
@@ -176,6 +186,16 @@ export const idlFactory = ({ IDL }) => {
     'getAvailableModels' : IDL.Func([], [IDL.Vec(Model)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getFundingStatus' : IDL.Func(
+        [],
+        [
+          IDL.Record({
+            'topUpAccount' : IDL.Opt(IDL.Text),
+            'depositInstructions' : IDL.Text,
+          }),
+        ],
+        ['query'],
+      ),
     'getModelById' : IDL.Func([ModelId], [IDL.Opt(Model)], ['query']),
     'getModelStats' : IDL.Func(
         [],

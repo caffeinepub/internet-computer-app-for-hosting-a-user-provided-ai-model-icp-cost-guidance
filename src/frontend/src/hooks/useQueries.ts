@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import type { Model, ModelMetadataUpdate, UserProfile } from '../backend';
+import { Principal } from '@dfinity/principal';
 
 export function useGetMyModels() {
   const { actor, isFetching } = useActor();
@@ -72,5 +73,30 @@ export function useSaveCallerUserProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
     },
+  });
+}
+
+export function useGetFundingStatus() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['fundingStatus'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      const status = await actor.getFundingStatus();
+      
+      // Get the actual canister ID from the actor
+      const canisterId = Principal.fromText(
+        (actor as any)._canisterId?.toString() || 'unknown'
+      );
+      
+      return {
+        ...status,
+        canisterId,
+        cycles: BigInt(0), // Backend doesn't expose cycles yet
+      };
+    },
+    enabled: !!actor && !isFetching,
+    retry: false,
   });
 }

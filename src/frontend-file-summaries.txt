@@ -1,6 +1,6 @@
 {
-  "frontend/src/App.tsx": "Main application shell with tab-based navigation between Models, Inference, Cost Estimator, and Limitations pages, including header with login button and profile setup modal integration.",
-  "frontend/src/hooks/useQueries.ts": "React Query hooks for backend operations including fetching models, updating model metadata, deleting models, and managing user profiles with automatic cache invalidation.",
+  "frontend/src/App.tsx": "Main application shell with tab-based navigation including new Funding tab (authenticated only), header with login, profile setup modal, and footer with attribution.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for backend operations including model management, user profiles, and funding status query that now extracts the actual canister ID from the actor instance.",
   "frontend/src/hooks/useCurrentUserProfile.ts": "Custom hook for fetching the current user's profile with proper loading state management to prevent modal flash on authentication.",
   "frontend/src/components/auth/LoginButton.tsx": "Authentication button component that handles Internet Identity login/logout with loading states and query cache clearing on logout.",
   "frontend/src/components/auth/ProfileSetupModal.tsx": "Modal dialog for first-time user profile setup that prompts authenticated users without a profile to enter their name.",
@@ -11,5 +11,9 @@
   "frontend/src/pages/LimitationsPage.tsx": "Comprehensive documentation page explaining IC platform constraints, feasible vs. infeasible model types, and optimization strategies for on-chain AI hosting.",
   "frontend/src/lib/costEstimator.ts": "Pure utility functions for calculating storage and compute costs in cycles, converting to ICP equivalents, and formatting large numbers with appropriate units.",
   "frontend/src/index.css": "Global styles with emerald/amber OKLCH color theme for both light and dark modes, avoiding blue/purple palette per requirements.",
-  "frontend/tailwind.config.js": "Tailwind configuration with custom emerald/amber color tokens, Inter/JetBrains Mono fonts, and extended design system for consistent developer-focused aesthetics."
+  "frontend/tailwind.config.js": "Tailwind configuration with custom emerald/amber color tokens, Inter/JetBrains Mono fonts, and extended design system for consistent developer-focused aesthetics.",
+  "frontend/src/pages/FundingPage.tsx": "Comprehensive funding page displaying live canister principal ID, cycles balance (with note about query limitations), deposit instructions, and 10-year runway cost estimator with interactive parameters.",
+  "frontend/src/config.ts": "Actor configuration factory that detects network environment (local vs IC mainnet) and creates backend actors with appropriate host and canister ID settings for deployment.",
+  "frontend/.ic-assets.json5": "Asset canister configuration defining HTTP headers and caching rules for different file types, optimized for production deployment with security headers and long-term caching for static assets.",
+  "frontend/DEPLOYMENT_RUNBOOK.md": "Comprehensive deployment guide covering prerequisites, step-by-step mainnet deployment instructions, canister management commands, troubleshooting tips, and production best practices."
 }

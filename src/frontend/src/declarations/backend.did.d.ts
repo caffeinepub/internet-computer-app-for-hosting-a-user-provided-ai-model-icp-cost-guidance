@@ -66,6 +66,10 @@ export interface _SERVICE {
   'getAvailableModels' : ActorMethod<[], Array<Model>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getFundingStatus' : ActorMethod<
+    [],
+    { 'topUpAccount' : [] | [string], 'depositInstructions' : string }
+  >,
   'getModelById' : ActorMethod<[ModelId], [] | [Model]>,
   'getModelStats' : ActorMethod<
     [],
