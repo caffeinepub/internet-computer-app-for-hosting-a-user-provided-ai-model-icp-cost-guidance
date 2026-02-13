@@ -1,0 +1,15 @@
+{
+  "frontend/src/App.tsx": "Main application shell with tab-based navigation between Models, Inference, Cost Estimator, and Limitations pages, including header with login button and profile setup modal integration.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for backend operations including fetching models, updating model metadata, deleting models, and managing user profiles with automatic cache invalidation.",
+  "frontend/src/hooks/useCurrentUserProfile.ts": "Custom hook for fetching the current user's profile with proper loading state management to prevent modal flash on authentication.",
+  "frontend/src/components/auth/LoginButton.tsx": "Authentication button component that handles Internet Identity login/logout with loading states and query cache clearing on logout.",
+  "frontend/src/components/auth/ProfileSetupModal.tsx": "Modal dialog for first-time user profile setup that prompts authenticated users without a profile to enter their name.",
+  "frontend/src/components/auth/AuthGate.tsx": "Authentication gate component that displays a sign-in prompt for unauthenticated users and renders protected content for authenticated users.",
+  "frontend/src/pages/ModelManagementPage.tsx": "Model management interface with registration form for uploading model artifacts (with 2MB size limit), displaying user's models in a card grid with metadata and delete functionality.",
+  "frontend/src/pages/InferencePage.tsx": "Inference execution interface allowing users to select a registered model, provide input data, and run inference with simulated results (demo mode with note about actual runtime requirements).",
+  "frontend/src/pages/CostEstimatorPage.tsx": "Interactive ICP cost calculator with adjustable parameters (model size, requests/day, compute time) displaying estimated cycles and ICP costs with breakdown and disclaimers.",
+  "frontend/src/pages/LimitationsPage.tsx": "Comprehensive documentation page explaining IC platform constraints, feasible vs. infeasible model types, and optimization strategies for on-chain AI hosting.",
+  "frontend/src/lib/costEstimator.ts": "Pure utility functions for calculating storage and compute costs in cycles, converting to ICP equivalents, and formatting large numbers with appropriate units.",
+  "frontend/src/index.css": "Global styles with emerald/amber OKLCH color theme for both light and dark modes, avoiding blue/purple palette per requirements.",
+  "frontend/tailwind.config.js": "Tailwind configuration with custom emerald/amber color tokens, Inter/JetBrains Mono fonts, and extended design system for consistent developer-focused aesthetics."
+}

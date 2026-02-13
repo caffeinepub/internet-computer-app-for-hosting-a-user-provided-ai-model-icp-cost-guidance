@@ -1,0 +1,136 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-13T22:44:29.179Z",
+  "summary": "The diff adds a full new frontend shell (models/inference/cost/limitations) with Internet Identity auth gating and an emerald/amber theme, plus a new Motoko backend actor with model metadata types and some authorization/profile/model query methods. However, the end-to-end “register model + backend inference + metrics instrumentation” flow is not fully implemented based on the visible diff: the inference UI is explicitly simulated, required model fields (version/description) are missing, stable storage/instrumentation/reset endpoints are not evidenced, and several extra admin/profile features appear that were not requested.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "Frontend provides a screen to register a model including at minimum: name, version, description, and model payload upload or pasted serialized parameters.",
+      "reason": "Model registration UI shown only includes a model name and file upload; no version/description fields and no paste/serialized-parameters option are evidenced.",
+      "evidence": [
+        "frontend/src/pages/ModelManagementPage.tsx"
+      ]
+    },
+    {
+      "id": "REQ-1",
+      "requirement": "Backend stores the registered model metadata and payload in stable storage (or documents size limits if payload must be small).",
+      "reason": "Backend code shown defines in-memory Maps (e.g., `let models = Map.empty...`) and includes blob-storage mixins, but the diff excerpt does not show stable variable declarations, preupgrade/postupgrade hooks, or explicit stable persistence of model records/payloads; documentation of enforced limits in backend is also not evidenced.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-1",
+      "requirement": "Backend exposes a canister method to run inference against the stored model.",
+      "reason": "The frontend inference page explicitly states the backend doesn’t have actual inference implementation and performs a local timeout + mock result; no backend inference method is evidenced in the shown backend excerpt.",
+      "evidence": [
+        "frontend/src/pages/InferencePage.tsx",
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-1",
+      "requirement": "Frontend sends an inference request to the backend and displays the backend response and error messages.",
+      "reason": "Inference is simulated client-side and does not call a canister method; therefore it does not display real backend responses/errors.",
+      "evidence": [
+        "frontend/src/pages/InferencePage.tsx"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Backend enforces authorization so only the owner can read/update/delete their model(s) and run inference using them.",
+      "reason": "Some authorization checks are shown for reading lists (e.g., `getMyModels`) and `getModelById` begins an owner/admin check, but the diff excerpt does not provide evidence that update/delete/inference methods exist and enforce ownership for those operations.",
+      "evidence": [
+        "backend/main.mo (truncated)",
+        "frontend/src/hooks/useQueries.ts"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "UI includes inputs for expected requests per day/month.",
+      "reason": "The cost estimator page shows a slider for “Requests per Day”, but the diff excerpt does not evidence a per-month input option (only day is visible).",
+      "evidence": [
+        "frontend/src/pages/CostEstimatorPage.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Backend tracks per-model call counts and last-call timestamp in stable state.",
+      "reason": "The backend `ModelMetadata` includes `totalInferenceCount` and `lastInferenceTime` fields, but there is no evidenced inference method that updates them, and no evidence these counters are persisted in stable state across upgrades.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Backend exposes a query method that returns stored model sizes and usage counters for the signed-in user.",
+      "reason": "`getMyModels()` returns models including `payloadSize`, `totalInferenceCount`, and `lastInferenceTime`, but because the diff excerpt does not show these counters being updated and does not clearly show stable tracking, this instrumentation is only partially evidenced; also no dedicated “metrics”/instrumentation endpoint is shown.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Backend exposes a method to reset usage counters for the signed-in user.",
+      "reason": "No reset method is evidenced in the diff summary.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Admin access-control initialization via a secret token passed in URL/session (`caffeineAdminToken`) and backend `_initializeAccessControlWithSecret` call.",
+      "reason": "The BuildRequest does not ask for admin roles, secret tokens, or URL-based admin initialization; it only specifies Internet Identity auth and per-user model isolation.",
+      "evidence": [
+        "frontend/src/hooks/useActor.ts",
+        "frontend/src/utils/urlParams.ts",
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "description": "User profile creation/setup flow (name prompt) and user profile canister methods.",
+      "reason": "User profiles are not part of the requested requirements (models, inference, cost guidance, limitations, and II-based ownership).",
+      "evidence": [
+        "frontend/src/components/auth/ProfileSetupModal.tsx",
+        "frontend/src/hooks/useCurrentUserProfile.ts",
+        "frontend/src/hooks/useQueries.ts",
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "description": "Admin-only model listing endpoint (`getAdminModels`) and related admin authorization logic.",
+      "reason": "Admin model browsing is not requested; requirement is to restrict users to their own models.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    }
+  ],
+  "confidence": 0.68,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/auth/AuthGate.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
+    "frontend/src/components/auth/ProfileSetupModal.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useCurrentUserProfile.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/lib/costEstimator.ts",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/CostEstimatorPage.tsx",
+    "frontend/src/pages/InferencePage.tsx",
+    "frontend/src/pages/LimitationsPage.tsx",
+    "frontend/src/pages/ModelManagementPage.tsx",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

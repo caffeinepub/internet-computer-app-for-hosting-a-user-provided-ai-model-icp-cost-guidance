@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build an app on the Internet Computer (ICP) to host and run the user's own AI model, including guidance on ICP resource/cost requirements.",
+  "architectural_notes": [
+    "Target deployment platform: Internet Computer (ICP)."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-a-minimal-end-to-end-icp-app-that-lets-a-user-provide-upload-register-their-own-ai-model-artifact-and-invoke-a-backend-inference-endpoint-with-clear-constraints-on-model-size-compute-suitable-for-running-inside-an-ic-canister",
+      "title": "Create a minimal end-to-end ICP app that lets a user provide (upload/register) their own AI model artifact and invoke a backend inference endpoint, with clear constraints on model size/compute suitable for running inside an IC canister.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-internet-identity-sign-in-and-associate-each-uploaded-registered-model-with-the-authenticated-principal-so-users-can-only-view-manage-their-own-models",
+      "title": "Add Internet Identity sign-in and associate each uploaded/registered model with the authenticated principal so users can only view/manage their own models.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-icp-cost-guidance-inside-the-app-include-an-interactive-estimator-that-helps-the-user-approximate-icp-cycles-needed-based-on-storage-size-number-of-inference-calls-and-average-compute-time-per-call-and-display-a-clear-disclaimer-that-estimates-vary-by-implementation",
+      "title": "Provide ICP cost guidance inside the app: include an interactive estimator that helps the user approximate ICP/cycles needed based on storage size, number of inference calls, and average compute time per call, and display a clear disclaimer that estimates vary by implementation.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-coherent-distinct-visual-theme-across-the-app-colors-typography-spacing-and-component-styling-suitable-for-a-developer-focused-ai-on-icp-dashboard-do-not-use-a-blue-purple-primary-palette",
+      "title": "Apply a coherent, distinct visual theme across the app (colors, typography, spacing, and component styling) suitable for a developer-focused “AI on ICP” dashboard. Do not use a blue/purple primary palette.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create an Internet Computer (ICP) app that can host and run the user's own AI model",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Estimate how much ICP is needed to host/run the AI model on the Internet Computer (cost and resource guidance)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Implement backend instrumentation endpoints to support cost estimation by measuring (and returning) basic metrics such as model payload size stored, number of inference calls, and approximate per-call compute time where feasible.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Internet Computer app for hosting a user-provided AI model + ICP cost guidance",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
